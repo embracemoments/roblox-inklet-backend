@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for roblox-inklet-backend on 2025-08-10T16:43:09Z
+# fly.toml app configuration file for roblox-inklet-backend
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -8,16 +8,30 @@ primary_region = 'gru'
 
 [build]
 
+# ✨ A SEÇÃO ABAIXO É A CORREÇÃO CRUCIAL ✨
+# Ela diz ao Fly.io para direcionar o tráfego das portas 80 (http) e 443 (https)
+# para a porta interna onde seu aplicativo está escutando.
+[[services]]
+  protocol = "tcp"
+  internal_port = 8080
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = false
   auto_start_machines = true
   min_machines_running = 1
   processes = ['app']
 
 [[vm]]
   size = 'shared-cpu-1x'
-  cpu_kind = 'shared'
-  cpus = 1
   memory_mb = 256
