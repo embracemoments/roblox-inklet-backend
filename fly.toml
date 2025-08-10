@@ -1,4 +1,4 @@
-# fly.toml app configuration file for roblox-inklet-backend
+# fly.toml app configuration file generated for roblox-inklet-backend on 2025-08-10T16:43:09Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -9,13 +9,15 @@ primary_region = 'gru'
 [build]
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
-  auto_stop_machines = false  # <-- CORREÇÃO 1: Não desligar a máquina
-  auto_start_machines = true # <-- Deixar true para garantir que ela ligue se parar por algum motivo
-  min_machines_running = 1    # <-- CORREÇÃO 2: Manter no mínimo 1 máquina sempre ligada
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
   processes = ['app']
 
 [[vm]]
   size = 'shared-cpu-1x'
-  memory_mb = 256             # <-- CORREÇÃO 3: Definir a memória para a cota gratuita
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 256
