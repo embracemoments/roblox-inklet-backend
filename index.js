@@ -1,7 +1,5 @@
 const express = require("express");
 const sharp = require("sharp");
-// A linha abaixo não é estritamente necessária nas versões modernas do Node.js,
-// mas não custa nada ter para garantir a compatibilidade.
 const fetch = require('node-fetch');
 
 const app = express();
@@ -9,7 +7,6 @@ const app = express();
 // =======================================================================
 //           👉 AS CHAVES SECRETAS SERÃO LIDAS DO AMBIENTE DO FLY.IO 👈
 // =======================================================================
-// O código vai pegar as chaves que você configurar com o comando "fly secrets set"
 const ROBLOX_API_KEY = process.env.ROBLOX_API_KEY;
 const ROBLOX_GROUP_ID = process.env.ROBLOX_GROUP_ID;
 // =======================================================================
@@ -29,7 +26,7 @@ function createFinalMultipartFormData(pngBuffer, assetData) {
   const creationContext = { creator: { groupId: ROBLOX_GROUP_ID } };
 
   const requestJson = JSON.stringify({
-    assetType: "Image", // Pedimos uma Imagem, não um Decal.
+    assetType: "Image",
     displayName: assetData.name,
     description: assetData.description,
     creationContext: creationContext
@@ -60,7 +57,6 @@ app.post("/upload", async (req, res) => {
   try {
     console.log("📥 Recebendo dados do canvas...");
 
-    // Verificação de segurança: garantir que as chaves foram carregadas
     if (!ROBLOX_API_KEY || !ROBLOX_GROUP_ID) {
         console.error("❌ ERRO CRÍTICO: As variáveis de ambiente ROBLOX_API_KEY ou ROBLOX_GROUP_ID não foram carregadas.");
         return res.status(500).json({ success: false, error: "Erro de configuração do servidor." });
@@ -128,9 +124,10 @@ app.post("/upload", async (req, res) => {
   }
 });
 
-// O Fly.io define a porta através da variável de ambiente PORT.
-// Usamos 3000 como fallback para testes locais.
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`🚀 Servidor pronto na porta ${port}!`);
+
+// ✨ CORREÇÃO FINAL APLICADA AQUI ✨
+// Escuta em 0.0.0.0 para aceitar conexões de fora do contêiner (do proxy do Fly.io)
+app.listen(port, '0.0.0.0', () => {
+  console.log(`🚀 Servidor pronto na porta ${port}, escutando em 0.0.0.0!`);
 });
