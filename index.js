@@ -1,6 +1,5 @@
 const express = require("express");
 const sharp = require("sharp");
-const fetch = require('node-fetch');
 
 const app = express();
 
@@ -131,3 +130,4 @@ const port = process.env.PORT || 3000;
 app.listen(port, '0.0.0.0', () => {
   console.log(`🚀 Servidor pronto na porta ${port}, escutando em 0.0.0.0!`);
 });
+
